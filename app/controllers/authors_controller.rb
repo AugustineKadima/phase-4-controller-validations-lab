@@ -1,5 +1,7 @@
 class AuthorsController < ApplicationController
   
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
+
   def show
     author = Author.find(params[:id])
 
@@ -18,4 +20,7 @@ class AuthorsController < ApplicationController
     params.permit(:email, :name)
   end
   
+  def render_unprocessable_entity_response(invalid)
+    render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
+  end
 end
